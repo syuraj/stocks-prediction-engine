@@ -19,7 +19,7 @@ import matplotlib
 class Stocker():
 
     # Initialization requires a ticker symbol
-    def __init__(self, ticker, exchange='WIKI'):
+    def __init__(self, api_key, ticker, exchange='WIKI'):
 
         # Enforce capitalization
         ticker = ticker.upper()
@@ -28,7 +28,7 @@ class Stocker():
         self.symbol = ticker
 
         # Use Personal Api Key
-        # quandl.ApiConfig.api_key = 'YourKeyHere'
+        quandl.ApiConfig.api_key = api_key
 
         # Retrieval the financial data
         try:
