@@ -54,9 +54,13 @@ class Stocker():
             stock['Adj. Close'] = stock['5. adjusted close']
             stock['Adj. Open'] = stock['1. open'] * stock['5. adjusted close'] / stock['4. close']
             stock['Adj. Volume'] = stock['6. volume'] * stock['4. close'] / stock['5. adjusted close']
+            stock['Adj. High'] = stock['2. high'] * stock['5. adjusted close'] / stock['4. close']
+            stock['Adj. Close'] = stock['4. close'] * stock['5. adjusted close'] / stock['4. close']
 
         stock['y'] = stock['Adj. Close']
         stock['Daily Change'] = stock['Adj. Close'] - stock['Adj. Open']
+        stock.drop(['1. open', '2. high', '3. low', '4. close', 'adjusted close',
+            '6. volume', '7. dividend amount', '8. split coefficient'], axis=1)
 
         # Data assigned as class attribute
         self.stock = stock.copy()
