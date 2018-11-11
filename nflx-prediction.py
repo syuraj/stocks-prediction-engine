@@ -2,7 +2,9 @@
 # %%
 from ConfigReader import ConfigReader
 configReader = ConfigReader()
-api_key = configReader.readConfig('quandl.ApiConfig.api_key')
+# api_key = configReader.readConfig('alphavantage.api_key')
+# api_key = ''
+
 
 # %%
 from stocker import Stocker

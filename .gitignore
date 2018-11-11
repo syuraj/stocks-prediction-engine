@@ -1,3 +1,6 @@
 # temp files
 __pycache__/
 config.ini
+
+# data files
+data/

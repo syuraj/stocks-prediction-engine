@@ -1,13 +1,13 @@
-# Quandl for financial analysis, pandas and numpy for data manipulation
+# Alphavantage.co for financial analysis, pandas and numpy for data manipulation
 # fbprophet for additive models, #pytrends for Google trend data
 # Copied from https://github.com/WillKoehrsen/Data-Analysis/tree/master/stocker
 
-import quandl
 import pandas as pd
 import numpy as np
 import fbprophet
 import pytrends
 from pytrends.request import TrendReq
+from alpha_vantage.timeseries import TimeSeries
 
 # matplotlib pyplot for plotting
 import matplotlib.pyplot as plt
@@ -27,27 +27,33 @@ class Stocker():
         # Symbol is used for labeling plots
         self.symbol = ticker
 
-        # Use Personal Api Key
-        quandl.ApiConfig.api_key = api_key
-
         # Retrieval the financial data
-        try:
-            stock = quandl.get('%s/%s' % (exchange, ticker))
+        stock_file_path = './data/' + ticker + '.csv';
 
-        except Exception as e:
-            print('Error Retrieving Data.')
-            print(e)
-            return
+        try:
+            stock = pd.read_csv(stock_file_path, index_col=0, parse_dates=['date'])
+            # print(type(stock['date']))
+        except FileNotFoundError:
+            try:
+                ts = TimeSeries(key=api_key, output_format='pandas', indexing_type='integer')
+                stock, meta_data = ts.get_daily_adjusted(symbol=ticker, outputsize='full')
+                stock.to_csv(stock_file_path)
+            except Exception as e:
+                print('Error Retrieving Data.')
+                print(e)
+                return
 
         # Set the index to a column called Date
         stock = stock.reset_index(level=0)
+        stock.rename(columns={"date": "Date"},  inplace=True)
 
         # Columns required for prophet
         stock['ds'] = stock['Date']
 
         if ('Adj. Close' not in stock.columns):
-            stock['Adj. Close'] = stock['Close']
-            stock['Adj. Open'] = stock['Open']
+            stock['Adj. Close'] = stock['5. adjusted close']
+            stock['Adj. Open'] = stock['1. open'] * stock['5. adjusted close'] / stock['4. close']
+            stock['Adj. Volume'] = stock['6. volume'] * stock['4. close'] / stock['5. adjusted close']
 
         stock['y'] = stock['Adj. Close']
         stock['Daily Change'] = stock['Adj. Close'] - stock['Adj. Open']
@@ -89,9 +95,9 @@ class Stocker():
         self.yearly_seasonality = True
         self.changepoints = None
 
-        print('{} Stocker Initialized. Data covers {} to {}.'.format(self.symbol,
-                                                                     self.min_date.date(),
-                                                                     self.max_date.date()))
+        # print('{} Stocker Initialized. Data covers {} to {}.'.format(self.symbol,
+        #                                                              self.min_date.date(),
+        #                                                              self.max_date.date()))
 
     """
     Make sure start and end dates are in the range and can be
