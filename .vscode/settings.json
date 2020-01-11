@@ -1,5 +1,9 @@
 {
-    "python.pythonPath": "/Users/sshrestha/anaconda3/envs/prophet37/bin/python",
+	"editor.useTabStops": true,
+	"editor.insertSpaces": true,
+	"editor.tabSize": 4,
+	"editor.detectIndentation": true,
+	"python.pythonPath": "/Users/sshrestha/anaconda3/envs/prophet37/bin/python",
 	"python.linting.pylintEnabled": true,
 	"deepscan.enable": true
 }

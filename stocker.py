@@ -17,6 +17,7 @@ import matplotlib
 # Class for analyzing and (attempting) to predict future prices
 # Contains a number of visualizations and analysis methods
 
+
 class Stocker():
 
     # Initialization requires a ticker symbol
@@ -32,12 +33,12 @@ class Stocker():
         stock_file_path = './data/' + ticker + '.csv'
 
         try:
-            stock = pd.read_csv(stock_file_path, index_col=0, parse_dates=['date'])
-            # print(type(stock['date']))
+            stock = pd.read_csv(stock_file_path, index_col=0, parse_dates=['index'])
         except FileNotFoundError:
             try:
                 ts = TimeSeries(key=api_key, output_format='pandas', indexing_type='integer')
                 stock, meta_data = ts.get_daily_adjusted(symbol=ticker, outputsize='full')
+                stock.rename(columns={"index": "Date"},  inplace=True)
                 stock.to_csv(stock_file_path)
             except Exception as e:
                 print('Error Retrieving Data.')
@@ -46,7 +47,7 @@ class Stocker():
 
         # Set the index to a column called Date
         stock = stock.reset_index(level=0)
-        stock.rename(columns={"date": "Date"},  inplace=True)
+        stock['Date']= pd.to_datetime(stock['Date'])
 
         # Columns required for prophet
         stock['ds'] = stock['Date']

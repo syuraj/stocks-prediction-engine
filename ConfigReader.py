@@ -1,6 +1,5 @@
 import configparser
 
-
 class ConfigReader():
 
     def readConfig(self, configName, section='DEFAULT'):
