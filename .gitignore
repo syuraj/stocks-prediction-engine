@@ -4,3 +4,6 @@ config.ini
 
 # data files
 data/
+
+# compiled files
+*.pyc

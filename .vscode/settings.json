@@ -1,4 +1,5 @@
 {
-    "python.pythonPath": "/Users/sshrestha/anaconda3/envs/virutal36conda/bin/python",
-    "python.linting.pylintEnabled": true
+    "python.pythonPath": "/Users/sshrestha/anaconda3/envs/prophet37/bin/python",
+	"python.linting.pylintEnabled": true,
+	"deepscan.enable": true
 }
