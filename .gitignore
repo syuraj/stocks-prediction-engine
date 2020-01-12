@@ -3,7 +3,8 @@ __pycache__/
 config.ini
 
 # data files
-data/
+data/*
+!data/.gitignore
 
 # compiled files
 *.pyc
