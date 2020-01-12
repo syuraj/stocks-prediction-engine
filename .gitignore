@@ -7,3 +7,6 @@ data/
 
 # compiled files
 *.pyc
+
+# settings files
+.env

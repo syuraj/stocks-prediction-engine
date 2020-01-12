@@ -10,14 +10,14 @@ from stocker import Stocker
 stock = Stocker(api_key, 'TSLA')
 
 # %%
-stock.plot_stock(start_date='2018-10-1')
+stock.plot_stock(start_date='2019-10-1')
 
 # %%
 # predict days into the future
 model, model_data = stock.create_prophet_model(days=30)
 
 # %%
-stock.evaluate_prediction()
+# stock.evaluate_prediction()
 
 # %%
 # changepoint priors is the list of changepoints to evaluate
