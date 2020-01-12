@@ -10,7 +10,8 @@ class Predicter():
     @staticmethod
     def predict():
         stock = Stocker(api_key,  'TSLA')
-        stock.plot_stock(start_date=pd.to_datetime('2018-10-1'))
+
+        print('Running prediction for TSLA')
 
         model,  model_data = stock.create_prophet_model(days=30)
 
