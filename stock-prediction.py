@@ -1,12 +1,12 @@
 # Ref: https://towardsdatascience.com/stock-prediction-in-python-b66555171a2
-# %%
-from ConfigReader import ConfigReader
-configReader = ConfigReader()
-api_key = configReader.readConfig('alphavantage.api_key')
-# api_key = ''
 
 # %%
 from stocker import Stocker
+from environs import Env
+env = Env()
+api_key = env('alphavantage_api_key')
+
+# %%
 stock = Stocker(api_key, 'TSLA')
 
 # %%

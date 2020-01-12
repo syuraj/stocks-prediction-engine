@@ -1,10 +1,9 @@
-from ConfigReader import ConfigReader
+from environs import Env
 from stocker import Stocker
 import pandas as pd
 
-configReader = ConfigReader()
-api_key = configReader.readConfig('alphavantage.api_key')
-
+env = Env()
+api_key = env('alphavantage_api_key')
 
 class Predicter():
 
