@@ -1,1 +1,1 @@
-worker: python job-runner.py
+worker: python job_runner.py

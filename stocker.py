@@ -473,7 +473,6 @@ class Stocker():
         future = model.predict(future)
 
         if days > 0:
-            # Print the predicted price
             print('Predicted Price on {} = ${:.2f}'.format(
                 future.ix[len(future) - 1, 'ds'].date(), future.ix[len(future) - 1, 'yhat']))
 

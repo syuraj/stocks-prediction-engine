@@ -21,7 +21,14 @@ from Predicter import Predicter
 Predicter.predict()
 
 # %%
+from mongo_connection import get_db_connection
+conn = get_db_connection()
+
+print(conn)
+
+# %%
 # stock.evaluate_prediction()
+
 
 # %%
 # changepoint priors is the list of changepoints to evaluate
