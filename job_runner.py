@@ -1,8 +1,8 @@
 import schedule
 import time
-from Predicter import Predicter
+from Predictor import Predictor
 
-schedule.every(10).minutes.do(Predicter.predict)
+schedule.every(10).minutes.do(Predictor.predict)
 
 while True:
     schedule.run_pending()
