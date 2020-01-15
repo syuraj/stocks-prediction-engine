@@ -4,6 +4,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.jobstores.mongodb import MongoDBJobStore
 from apscheduler.executors.pool import ThreadPoolExecutor, ProcessPoolExecutor
 from Predictor import Predictor
+import time
 
 jobstores = {
     'default': MongoDBJobStore(database='stocksdb', client=get_db_connection()),
@@ -21,3 +22,6 @@ scheduler = BackgroundScheduler(jobstores=jobstores, executors=executors, job_de
 job = scheduler.add_job(Predictor.predict, 'interval', minutes=10)
 
 scheduler.start()
+
+while True:
+    time.sleep(30)
