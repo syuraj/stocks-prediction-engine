@@ -1,6 +1,7 @@
 # Ref: https://towardsdatascience.com/stock-prediction-in-python-b66555171a2
 
 # %%
+from Predictor import Predictor
 from stocker import Stocker
 from environs import Env
 env = Env()
@@ -17,14 +18,11 @@ stock.plot_stock(start_date='2019-10-1')
 model, model_data = stock.create_prophet_model(days=30)
 
 # %%
-from Predicter import Predicter
-Predicter.predict()
+model,  model_data = Predictor.predict()
 
 # %%
-from mongo_connection import get_db_connection
-conn = get_db_connection()
 
-print(conn)
+
 
 # %%
 # stock.evaluate_prediction()

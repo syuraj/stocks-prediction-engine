@@ -9,10 +9,3 @@ def get_db_connection():
     dbClient = pymongo.MongoClient(db_url)
 
     return dbClient
-
-# mydb = dbClient["stocksdb"]
-# mycol = mydb["customers"]
-# mydict = { "name": "John", "address": "Highway 37" }
-# x = mycol.insert_one(mydict)
-
-# %%
