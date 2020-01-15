@@ -1,9 +1,23 @@
-import schedule
-import time
+from mongo_connection import get_db_connection
+from pytz import utc
+from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.jobstores.mongodb import MongoDBJobStore
+from apscheduler.executors.pool import ThreadPoolExecutor, ProcessPoolExecutor
 from Predictor import Predictor
 
-schedule.every(10).minutes.do(Predictor.predict)
+jobstores = {
+    'default': MongoDBJobStore(database='stocksdb', client=get_db_connection()),
+}
+executors = {
+    'default': ThreadPoolExecutor(20),
+    'processpool': ProcessPoolExecutor(5)
+}
+job_defaults = {
+    'coalesce': False,
+    'max_instances': 3
+}
+scheduler = BackgroundScheduler(jobstores=jobstores, executors=executors, job_defaults=job_defaults, timezone=utc)
 
-while True:
-    schedule.run_pending()
-    time.sleep(1)
+job = scheduler.add_job(Predictor.predict, 'interval', minutes=10)
+
+scheduler.start()
