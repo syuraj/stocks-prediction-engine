@@ -1,9 +1,10 @@
+alpha_vantage==2.1.2
+dnspython==1.16.0
+environs==7.1.0
+fbprophet==0.5
+matplotlib==3.1.1
 numpy==1.17.3
 pandas==0.25.1
-pymongo[tls,srv]==3.10.1
-fbprophet==0.5
+pymongo==3.10.1
 pytrends==4.7.2
-alpha_vantage==2.1.2
-matplotlib==3.1.1
-environs==7.1.0
 schedule==0.6.0

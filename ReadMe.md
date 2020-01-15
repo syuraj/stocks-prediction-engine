@@ -7,3 +7,7 @@ Plots stock prediction using fbprophet with data from alphavantage
 #### Reference:
 https://towardsdatascience.com/stock-prediction-in-python-b66555171a2
 https://github.com/WillKoehrsen/Data-Analysis/tree/master/stocker
+
+
+## Some helpful python commands
+* `pipreqs --print --force .  | sort > requirements.txt`  --to list used python packages in ascending order
