@@ -49,40 +49,4 @@ class StockModelLoader():
         stock.drop(['1. open', '2. high', '3. low', '4. close', '5. adjusted close',
                     '6. volume', '7. dividend amount', '8. split coefficient'], axis=1)
 
-        # Minimum and maximum date in range
-        self.min_date = min(stock['Date'])
-        self.max_date = max(stock['Date'])
-        self.min_date = pd.to_datetime(self.min_date)
-        self.max_date = pd.to_datetime(self.max_date)
-
-        # Find max and min prices and dates on which they occurred
-        self.max_price = np.max(stock['y'])
-        self.min_price = np.min(stock['y'])
-
-        self.min_price_date = stock[stock['y'] == self.min_price]['Date']
-        self.min_price_date = self.min_price_date[self.min_price_date.index[0]]
-        self.max_price_date = stock[stock['y'] == self.max_price]['Date']
-        self.max_price_date = self.max_price_date[self.max_price_date.index[0]]
-
-        # The starting price (starting with the opening price)
-        self.starting_price = float(stock.ix[0, 'Adj. Open'])
-
-        # The most recent price
-        self.most_recent_price = float(stock.ix[len(stock) - 1, 'y'])
-
-        # Whether or not to round dates
-        self.round_dates = True
-
-        # Number of years of data to train on
-        self.training_years = 3
-
-        # Prophet parameters
-        # Default prior from library
-        self.changepoint_prior_scale = 0.05
-        self.weekly_seasonality = False
-        self.daily_seasonality = False
-        self.monthly_seasonality = True
-        self.yearly_seasonality = True
-        self.changepoints = None
-
         return stock

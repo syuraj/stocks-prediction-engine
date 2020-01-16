@@ -18,10 +18,12 @@ stock.plot_stock(start_date='2019-10-1')
 model, model_data = stock.create_prophet_model(days=30)
 
 # %%
-model,  model_data = Predictor.predict()
+
+model,  future = Predictor().predict()
+
+print(future)
 
 # %%
-
 
 
 # %%
