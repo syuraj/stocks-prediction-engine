@@ -67,7 +67,7 @@ class StockTrainer():
         future = model.make_future_dataframe(periods=days, freq='D')
         future = model.predict(future)
 
-        return model, future
+        return model, stock_history, future
 
     # Evaluate prediction model for one year
     def evaluate_prediction(self, start_date=None, end_date=None, nshares=None):
