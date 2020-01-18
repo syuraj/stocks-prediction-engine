@@ -1,3 +1,4 @@
+import gc
 from mongo_connection import get_db_connection
 from pytz import utc
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -25,3 +26,4 @@ scheduler.start()
 
 while True:
     time.sleep(30)
+    gc.collect()
