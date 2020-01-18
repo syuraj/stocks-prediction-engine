@@ -15,7 +15,7 @@ class Predictor():
 
         print(f'Running prediction for {symbol}')
 
-        trainer = StockTrainer("", "TSLA")
+        trainer = StockTrainer(api_key, "TSLA")
         model, future = trainer.create_prophet_model()
 
         self.save_model_in_db(symbol, future[['ds', 'yhat']].to_json())
