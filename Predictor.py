@@ -1,7 +1,8 @@
-from environs import Env
 import pandas as pd
-from mongo_connection import get_db_connection
+from environs import Env
+from datetime import date
 import json
+from mongo_connection import get_db_connection
 from stock_trainer import StockTrainer
 
 env = Env()
@@ -27,6 +28,6 @@ class Predictor():
         stocksdb = conn["stocksdb"]
         modelCollection = stocksdb["models"]
 
-        model = {"symbol": symbol, "model": model_data}
+        model = {"symbol": symbol, "model": model_data, "date_created": date.today()}
 
         modelCollection.insert_one(model)
