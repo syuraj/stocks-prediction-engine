@@ -28,6 +28,6 @@ class Predictor():
         stocksdb = conn["stocksdb"]
         modelCollection = stocksdb["models"]
 
-        model = {"symbol": symbol, "model": model_data, "date_created": date.today()}
+        model = {"symbol": symbol, "model": model_data, "date_created": date.today().strftime("%Y-%m-%d")}
 
-        modelCollection.insert_one(model)
+        modelCollection.find_one_and_replace({"symbol": symbol}, model, upsert=True)
