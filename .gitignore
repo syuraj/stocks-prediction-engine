@@ -11,3 +11,4 @@ data/*
 
 # settings files
 .env
+.vscode/settings.json
