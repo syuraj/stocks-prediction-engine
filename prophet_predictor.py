@@ -9,7 +9,7 @@ env = Env()
 api_key = env('alphavantage_api_key')
 
 
-class Predictor():
+class ProphetPredictor():
 
     def predict(self):
         symbol = 'TSLA'
@@ -20,7 +20,7 @@ class Predictor():
         model, stock_history, stock_forecast = trainer.create_prophet_model(30)
         train_mean_error, test_mean_error = trainer.evaluate_prediction()
 
-        title = 'Stock Prediction for {} with mean error {:.2f}'.format(symbol, test_mean_error)
+        title = 'Stock Prediction using Prophet for {} with mean error {:.2f}'.format(symbol, test_mean_error)
 
         self.save_model_in_db(symbol, title, stock_history[["ds", "Adj. Close"]].to_json(),
                               stock_forecast[['ds', 'yhat']].to_json(), train_mean_error, test_mean_error)

@@ -2,14 +2,14 @@
 
 # %%
 from datetime import date
-from Predictor import Predictor
+from prophet_predictor import ProphetPredictor
 from stocker import Stocker
 from environs import Env
 env = Env()
 api_key = env('alphavantage_api_key')
 
 # %%
-model,  stock_history, stock_forecast = Predictor().predict()
+model,  stock_history, stock_forecast = ProphetPredictor().predict()
 
 # %%
 print(stock_forecast.head(40))

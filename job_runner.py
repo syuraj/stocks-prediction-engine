@@ -4,7 +4,7 @@ from pytz import utc
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.jobstores.mongodb import MongoDBJobStore
 from apscheduler.executors.pool import ThreadPoolExecutor, ProcessPoolExecutor
-from Predictor import Predictor
+from prophet_predictor import ProphetPredictor
 import time
 
 jobstores = {
@@ -20,7 +20,7 @@ job_defaults = {
 }
 scheduler = BackgroundScheduler(jobstores=jobstores, executors=executors, job_defaults=job_defaults, timezone=utc)
 
-job = scheduler.add_job(Predictor().predict, 'interval', minutes=10, id="35fd79fa7ee7484696176b919ef6b431", replace_existing=True)
+job = scheduler.add_job(ProphetPredictor().predict, 'interval', minutes=10, id="35fd79fa7ee7484696176b919ef6b431", replace_existing=True)
 
 scheduler.start()
 
