@@ -1,6 +1,7 @@
 # temp files
 __pycache__/
 config.ini
+.pytest_cache
 
 # data files
 data/*
