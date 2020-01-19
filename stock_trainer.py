@@ -6,6 +6,7 @@ from pytrends.request import TrendReq
 from alpha_vantage.timeseries import TimeSeries
 from stock_model_loader import StockModelLoader
 import matplotlib
+import matplotlib.pyplot as plt
 
 
 class StockTrainer():
@@ -14,6 +15,7 @@ class StockTrainer():
         stock = stockLoader.load()
 
         self.stock = stock
+        self.symbol = ticker
 
         # Minimum and maximum date in range
         self.min_date = min(stock['Date'])
@@ -148,36 +150,7 @@ class StockTrainer():
             print('The actual value was within the {:d}% confidence interval {:.2f}% of the time.'.format(
                 int(100 * model.interval_width), in_range_accuracy))
 
-            # Reset the plot
-            self.reset_plot()
-
-            # Set up the plot
-            fig, ax = plt.subplots(1, 1)
-
-            # Plot the actual values
-            ax.plot(train['ds'], train['y'], 'ko-', linewidth=1.4, alpha=0.8, ms=1.8, label='Observations')
-            ax.plot(test['ds'], test['y'], 'ko-', linewidth=1.4, alpha=0.8, ms=1.8, label='Observations')
-
-            # Plot the predicted values
-            ax.plot(future['ds'], future['yhat'], 'navy', linewidth=2.4, label='Predicted')
-
-            # Plot the uncertainty interval as ribbon
-            ax.fill_between(future['ds'].dt.to_pydatetime(), future['yhat_upper'], future['yhat_lower'], alpha=0.6,
-                            facecolor='gold', edgecolor='k', linewidth=1.4, label='Confidence Interval')
-
-            # Put a vertical line at the start of predictions
-            plt.vlines(x=min(test['ds']).date(), ymin=min(future['yhat_lower']), ymax=max(future['yhat_upper']), colors='r',
-                       linestyles='dashed', label='Prediction Start')
-
-            # Plot formatting
-            plt.legend(loc=2, prop={'size': 8})
-            plt.xlabel('Date')
-            plt.ylabel('Price $')
-            plt.grid(linewidth=0.6, alpha=0.6)
-
-            plt.title('{} Model Evaluation from {} to {}.'.format(self.symbol,
-                                                                  start_date.date(), end_date.date()))
-            plt.show()
+            return train_mean_error, test_mean_error
 
         # If a number of shares is specified, play the game
         elif nshares:
@@ -235,3 +208,96 @@ class StockTrainer():
             model.add_seasonality(name='monthly', period=30.5, fourier_order=5)
 
         return model
+
+    def handle_dates(self, start_date, end_date):
+
+            # Default start and end date are the beginning and end of data
+        if start_date is None:
+            start_date = self.min_date
+        if end_date is None:
+            end_date = self.max_date
+
+        try:
+            # Convert to pandas datetime for indexing dataframe
+            start_date = pd.to_datetime(start_date)
+            end_date = pd.to_datetime(end_date)
+
+        except Exception as e:
+            print('Enter valid pandas date format.')
+            print(e)
+            return
+
+        valid_start = False
+        valid_end = False
+
+        # User will continue to enter dates until valid dates are met
+        while (not valid_start) & (not valid_end):
+            valid_end = True
+            valid_start = True
+
+            if end_date.date() < start_date.date():
+                print('End Date must be later than start date.')
+                start_date = pd.to_datetime(input('Enter a new start date: '))
+                end_date = pd.to_datetime(input('Enter a new end date: '))
+                valid_end = False
+                valid_start = False
+
+            else:
+                if end_date.date() > self.max_date.date():
+                    print('End Date exceeds data range')
+                    end_date = pd.to_datetime(input('Enter a new end date: '))
+                    valid_end = False
+
+                if start_date.date() < self.min_date.date():
+                    print('Start Date is before date range')
+                    start_date = pd.to_datetime(input('Enter a new start date: '))
+                    valid_start = False
+
+        return start_date, end_date
+
+    # Not sure if this should be a static method
+    @staticmethod
+    def reset_plot():
+
+        # Restore default parameters
+        matplotlib.rcParams.update(matplotlib.rcParamsDefault)
+
+        # Adjust a few parameters to liking
+        matplotlib.rcParams['figure.figsize'] = (8, 5)
+        matplotlib.rcParams['axes.labelsize'] = 10
+        matplotlib.rcParams['xtick.labelsize'] = 8
+        matplotlib.rcParams['ytick.labelsize'] = 8
+        matplotlib.rcParams['axes.titlesize'] = 14
+        matplotlib.rcParams['text.color'] = 'k'
+
+    # def plot_evaluation(self):
+    #     # Reset the plot
+    #     self.reset_plot()
+
+    #     # Set up the plot
+    #     fig, ax = plt.subplots(1, 1)
+
+    #     # Plot the actual values
+    #     ax.plot(train['ds'], train['y'], 'ko-', linewidth=1.4, alpha=0.8, ms=1.8, label='Observations')
+    #     ax.plot(test['ds'], test['y'], 'ko-', linewidth=1.4, alpha=0.8, ms=1.8, label='Observations')
+
+    #     # Plot the predicted values
+    #     ax.plot(future['ds'], future['yhat'], 'navy', linewidth=2.4, label='Predicted')
+
+    #     # Plot the uncertainty interval as ribbon
+    #     ax.fill_between(future['ds'].dt.to_pydatetime(), future['yhat_upper'], future['yhat_lower'], alpha=0.6,
+    #                     facecolor='gold', edgecolor='k', linewidth=1.4, label='Confidence Interval')
+
+    #     # Put a vertical line at the start of predictions
+    #     plt.vlines(x=min(test['ds']).date(), ymin=min(future['yhat_lower']), ymax=max(future['yhat_upper']), colors='r',
+    #                linestyles='dashed', label='Prediction Start')
+
+    #     # Plot formatting
+    #     plt.legend(loc=2, prop={'size': 8})
+    #     plt.xlabel('Date')
+    #     plt.ylabel('Price $')
+    #     plt.grid(linewidth=0.6, alpha=0.6)
+
+    #     plt.title('{} Model Evaluation from {} to {}.'.format(self.symbol,
+    #                                                           start_date.date(), end_date.date()))
+    #     plt.show()

@@ -18,20 +18,27 @@ class Predictor():
 
         trainer = StockTrainer(api_key, "TSLA")
         model, stock_history, stock_forecast = trainer.create_prophet_model(30)
+        train_mean_error, test_mean_error = trainer.evaluate_prediction()
 
-        self.save_model_in_db(symbol, stock_history[["ds", "Adj. Close"]].to_json(), stock_forecast[['ds', 'yhat']].to_json())
+        title = 'Stock Prediction for {} with mean error {:.2f}'.format(symbol, test_mean_error)
+
+        self.save_model_in_db(symbol, title, stock_history[["ds", "Adj. Close"]].to_json(),
+                              stock_forecast[['ds', 'yhat']].to_json(), train_mean_error, test_mean_error)
 
         return model,  stock_history, stock_forecast
 
-    def save_model_in_db(self, symbol, stock_history, stock_forecast):
+    def save_model_in_db(self, symbol, title, stock_history, stock_forecast, train_mean_error, test_mean_error):
         conn = get_db_connection()
         stocksdb = conn["stocksdb"]
         modelCollection = stocksdb["models"]
 
         dbModel = {
             "symbol": symbol,
+            "title": title,
             "stock_history": stock_history,
             "stock_forecast": stock_forecast,
+            "train_mean_error": train_mean_error,
+            "test_mean_error": test_mean_error,
             "date_created": date.today().strftime("%Y-%m-%d")
         }
 
