@@ -1,5 +1,5 @@
 import pytest
-from stock_model_loader import StockModelLoader
+from utilities.stock_model_loader import StockModelLoader
 
 
 @pytest.mark.integration

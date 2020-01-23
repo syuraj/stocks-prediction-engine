@@ -4,7 +4,7 @@ import fbprophet
 import pytrends
 from pytrends.request import TrendReq
 from alpha_vantage.timeseries import TimeSeries
-from stock_model_loader import StockModelLoader
+from utilities.stock_model_loader import StockModelLoader
 import matplotlib
 import matplotlib.pyplot as plt
 
@@ -58,7 +58,8 @@ class StockTrainer():
         model = self.create_model()
 
         # Fit on the stock history for self.training_years number of years
-        stock_history = self.stock[self.stock['Date'] > (self.max_date - pd.DateOffset(years=self.training_years)).date()]
+        stock_history = self.stock[self.stock['Date'] > (
+            self.max_date - pd.DateOffset(years=self.training_years)).date()]
 
         # if resample:
         #     stock_history = self.resample(stock_history)
@@ -88,7 +89,8 @@ class StockTrainer():
                            (self.stock['Date'] > (start_date - pd.DateOffset(years=self.training_years)).date())]
 
         # Testing data is specified in the range
-        test = self.stock[(self.stock['Date'] >= start_date.date()) & (self.stock['Date'] <= end_date.date())]
+        test = self.stock[(self.stock['Date'] >= start_date.date()) & (
+            self.stock['Date'] <= end_date.date())]
 
         # Create and train the model
         model = self.create_model()
@@ -108,11 +110,14 @@ class StockTrainer():
         test['real_diff'] = test['y'].diff()
 
         # Correct is when we predicted the correct direction
-        test['correct'] = (np.sign(test['pred_diff']) == np.sign(test['real_diff'])) * 1
+        test['correct'] = (np.sign(test['pred_diff']) ==
+                           np.sign(test['real_diff'])) * 1
 
         # Accuracy when we predict increase and decrease
-        increase_accuracy = 100 * np.mean(test[test['pred_diff'] > 0]['correct'])
-        decrease_accuracy = 100 * np.mean(test[test['pred_diff'] < 0]['correct'])
+        increase_accuracy = 100 * \
+            np.mean(test[test['pred_diff'] > 0]['correct'])
+        decrease_accuracy = 100 * \
+            np.mean(test[test['pred_diff'] < 0]['correct'])
 
         # Calculate mean absolute error
         test_errors = abs(test['y'] - test['yhat'])
@@ -137,15 +142,21 @@ class StockTrainer():
                                                          end_date.date()))
 
             # Final prediction vs actual value
-            print('\nPredicted price on {} = ${:.2f}.'.format(max(future['ds']).date(), future.ix[len(future) - 1, 'yhat']))
-            print('Actual price on    {} = ${:.2f}.\n'.format(max(test['ds']).date(), test.ix[len(test) - 1, 'y']))
+            print('\nPredicted price on {} = ${:.2f}.'.format(
+                max(future['ds']).date(), future.ix[len(future) - 1, 'yhat']))
+            print('Actual price on    {} = ${:.2f}.\n'.format(
+                max(test['ds']).date(), test.ix[len(test) - 1, 'y']))
 
-            print('Average Absolute Error on Training Data = ${:.2f}.'.format(train_mean_error))
-            print('Average Absolute Error on Testing  Data = ${:.2f}.\n'.format(test_mean_error))
+            print('Average Absolute Error on Training Data = ${:.2f}.'.format(
+                train_mean_error))
+            print('Average Absolute Error on Testing  Data = ${:.2f}.\n'.format(
+                test_mean_error))
 
             # Direction accuracy
-            print('When the model predicted an increase, the price increased {:.2f}% of the time.'.format(increase_accuracy))
-            print('When the model predicted a  decrease, the price decreased  {:.2f}% of the time.\n'.format(decrease_accuracy))
+            print('When the model predicted an increase, the price increased {:.2f}% of the time.'.format(
+                increase_accuracy))
+            print('When the model predicted a  decrease, the price decreased  {:.2f}% of the time.\n'.format(
+                decrease_accuracy))
 
             print('The actual value was within the {:d}% confidence interval {:.2f}% of the time.'.format(
                 int(100 * model.interval_width), in_range_accuracy))
@@ -166,31 +177,39 @@ class StockTrainer():
 
                 # If we predicted up and the price goes up, we gain the difference
                 if correct == 1:
-                    prediction_profit.append(nshares * test_pred_increase.ix[i, 'real_diff'])
+                    prediction_profit.append(
+                        nshares * test_pred_increase.ix[i, 'real_diff'])
                 # If we predicted up and the price goes down, we lose the difference
                 else:
-                    prediction_profit.append(nshares * test_pred_increase.ix[i, 'real_diff'])
+                    prediction_profit.append(
+                        nshares * test_pred_increase.ix[i, 'real_diff'])
 
             test_pred_increase['pred_profit'] = prediction_profit
 
             # Put the profit into the test dataframe
-            test = pd.merge(test, test_pred_increase[['ds', 'pred_profit']], on='ds', how='left')
+            test = pd.merge(
+                test, test_pred_increase[['ds', 'pred_profit']], on='ds', how='left')
             test.ix[0, 'pred_profit'] = 0
 
             # Profit for either method at all dates
             test['pred_profit'] = test['pred_profit'].cumsum().ffill()
-            test['hold_profit'] = nshares * (test['y'] - float(test.ix[0, 'y']))
+            test['hold_profit'] = nshares * \
+                (test['y'] - float(test.ix[0, 'y']))
 
             # Display information
             print('You played the stock market in {} from {} to {} with {} shares.\n'.format(
                 self.symbol, start_date.date(), end_date.date(), nshares))
 
-            print('When the model predicted an increase, the price increased {:.2f}% of the time.'.format(increase_accuracy))
-            print('When the model predicted a  decrease, the price decreased  {:.2f}% of the time.\n'.format(decrease_accuracy))
+            print('When the model predicted an increase, the price increased {:.2f}% of the time.'.format(
+                increase_accuracy))
+            print('When the model predicted a  decrease, the price decreased  {:.2f}% of the time.\n'.format(
+                decrease_accuracy))
 
             # Display some friendly information about the perils of playing the stock market
-            print('The total profit using the Prophet model = ${:.2f}.'.format(np.sum(prediction_profit)))
-            print('The Buy and Hold strategy profit =         ${:.2f}.'.format(float(test.ix[len(test) - 1, 'hold_profit'])))
+            print('The total profit using the Prophet model = ${:.2f}.'.format(
+                np.sum(prediction_profit)))
+            print('The Buy and Hold strategy profit =         ${:.2f}.'.format(
+                float(test.ix[len(test) - 1, 'hold_profit'])))
             print('\nThanks for playing the stock market!\n')
 
     # Create a prophet model without training
@@ -250,7 +269,8 @@ class StockTrainer():
 
                 if start_date.date() < self.min_date.date():
                     print('Start Date is before date range')
-                    start_date = pd.to_datetime(input('Enter a new start date: '))
+                    start_date = pd.to_datetime(
+                        input('Enter a new start date: '))
                     valid_start = False
 
         return start_date, end_date

@@ -1,6 +1,6 @@
 # %%
 import pytest
-from stock_trainer import StockTrainer
+from prophet.prophet_stock_trainer import StockTrainer
 
 
 # @pytest.mark.integration

@@ -1,10 +1,12 @@
+import sys
+sys.path.insert(0, '../')
 import gc
-from mongo_connection import get_db_connection
+from utilities.mongo_connection import get_db_connection
 from pytz import utc
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.jobstores.mongodb import MongoDBJobStore
 from apscheduler.executors.pool import ThreadPoolExecutor, ProcessPoolExecutor
-from prophet_predictor import ProphetPredictor
+from prophet.prophet_predictor import ProphetPredictor
 import time
 
 jobstores = {
@@ -18,9 +20,11 @@ job_defaults = {
     'coalesce': False,
     'max_instances': 3
 }
-scheduler = BackgroundScheduler(jobstores=jobstores, executors=executors, job_defaults=job_defaults, timezone=utc)
+scheduler = BackgroundScheduler(
+    jobstores=jobstores, executors=executors, job_defaults=job_defaults, timezone=utc)
 
-job = scheduler.add_job(ProphetPredictor().predict, 'interval', minutes=10, id="35fd79fa7ee7484696176b919ef6b431", replace_existing=True)
+job = scheduler.add_job(ProphetPredictor().predict, 'interval', minutes=10,
+                        id="35fd79fa7ee7484696176b919ef6b431", replace_existing=True)
 
 scheduler.start()
 
