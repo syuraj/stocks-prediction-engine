@@ -7,7 +7,6 @@ from prophet.prophet_stock_trainer import StockTrainer
 import os
 
 env = Env()
-env.read_env('.env')
 api_key = env('alphavantage_api_key')
 
 
